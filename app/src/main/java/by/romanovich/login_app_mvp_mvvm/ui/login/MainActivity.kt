@@ -1,17 +1,15 @@
-package by.romanovich.login_app_mvp_mvvm
+package by.romanovich.login_app_mvp_mvvm.ui.login
 
 import android.app.Activity
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Looper
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.core.view.isVisible
 import by.romanovich.login_app_mvp_mvvm.databinding.ActivityMainBinding
-import java.util.logging.Handler
 
 class MainActivity : AppCompatActivity(), LoginContract.View {
 
@@ -55,7 +53,8 @@ class MainActivity : AppCompatActivity(), LoginContract.View {
     }
     @MainThread
     override fun setError(error: String) {
-        Toast.makeText(this, "ERROR $error", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, " " +
+                "$error", Toast.LENGTH_SHORT).show()
     }
     @MainThread
     override fun showProgress() {

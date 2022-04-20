@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Login_app_mvp_mvvm">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.login.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

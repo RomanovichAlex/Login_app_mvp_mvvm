@@ -1,8 +1,6 @@
-package by.romanovich.login_app_mvp_mvvm
+package by.romanovich.login_app_mvp_mvvm.ui.login
 
-import android.view.View
 import androidx.annotation.MainThread
-import java.util.logging.Handler
 
 //контракт для всех сущностей
 class LoginContract {

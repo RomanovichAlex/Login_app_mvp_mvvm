@@ -1,8 +1,9 @@
-package by.romanovich.login_app_mvp_mvvm
+package by.romanovich.login_app_mvp_mvvm.ui.login
 
 import android.os.Handler
 import android.os.Looper
-import java.lang.Thread.sleep
+import by.romanovich.login_app_mvp_mvvm.domain.LoginApi
+import by.romanovich.login_app_mvp_mvvm.data.MockLoginApiImpl
 
 class LoginPresenter : LoginContract.Presenter {
     private var view: LoginContract.View? = null
@@ -10,6 +11,9 @@ class LoginPresenter : LoginContract.Presenter {
     //для запоминания при перевороте
     private var isSuccess: Boolean = false
     private var errorText: String = ""
+    //получаем MockLoginApiImpl
+    private val api: LoginApi = MockLoginApiImpl()
+
 
     override fun onAttach(view: LoginContract.View) {
         this.view = view
@@ -24,10 +28,14 @@ class LoginPresenter : LoginContract.Presenter {
     override fun onLogin(login: String, password: String) {
         view?.showProgress()
         Thread {
-            sleep(3_000)
+            //дождаться результат
+            val succes=api.login(login, password)
+            //вызываем настоящий вызов
+            api.login(login, password)
             uiHandler.post {
                 view?.hideProgress()
-                if (checkCredentials(login, password)) {
+                if (succes) {
+                    //if (checkCredentials(login, password)) { БЫЛО
                     view?.setSuccess()
                     isSuccess = true
                     errorText = ""
@@ -40,9 +48,9 @@ class LoginPresenter : LoginContract.Presenter {
         }.start()
     }
 
-    private fun checkCredentials(login: String, password: String): Boolean {
+    /*private fun checkCredentials(login: String, password: String): Boolean {
         return login == password
-    }
+    }было*/
 
     override fun onCredentialsChanged() {
         // todo
