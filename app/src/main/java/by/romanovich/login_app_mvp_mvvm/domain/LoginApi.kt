@@ -1,22 +1,13 @@
 package by.romanovich.login_app_mvp_mvvm.domain
 
-import androidx.annotation.WorkerThread
-
-//предметная облость, достает данные
+//model
 interface LoginApi {
-    //рабочий поток
-    @WorkerThread
     //функция принимает login и password и возращает Boolean
-    fun login(username: String, password: String): Boolean
-
-    @WorkerThread
+    fun login(login:String, password: String): Boolean
     //функция передает login,email и password и возращает Boolean
-    fun register(username: String, password: String): Boolean
-
-    @WorkerThread
-    fun checkAccount(username: String): Boolean
-
-    @WorkerThread
+    fun register(login:String, password: String, email: String): Boolean
+    //функция сервер в курсе что клиент ушел
+    fun logout(): Boolean
     //функция забыли пароль
-    fun forgotPassword(username: String): String
+    fun forgotPassword(login:String): Boolean
 }

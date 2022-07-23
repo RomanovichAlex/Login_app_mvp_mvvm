@@ -1,41 +1,27 @@
-package by.romanovich.login_app_mvp_mvvm
+package by.romanovich.login_app_mvp_mvvm.ui.login
 
-import android.os.Handler
 import androidx.annotation.MainThread
 
+//контракт для всех сущностей
 class LoginContract {
 
+    //все методы view
     interface View {
         @MainThread
         fun setSuccess()
-
         @MainThread
         fun setError(error: String)
-
         @MainThread
-        fun showLoading()
-
+        fun showProgress()
         @MainThread
-        fun hideLoading()
-
-        @MainThread
-        fun getHandler(): Handler
-
-        fun passwordReminderSuccess(password: String)
-        fun addAccountSuccess(login: String)
+        fun hideProgress()
+        //fun getHandler(): Handler
     }
 
-    interface Presenter {
-        @MainThread
+    //все методы пресентера
+    interface Presenter{
         fun onAttach(view: View)
-
-        @MainThread
         fun onLogin(login: String, password: String)
-
-        @MainThread
-        fun onForgotPassword(login: String)
-
-        @MainThread
-        fun onSignUp(login: String, password: String)
+        fun onCredentialsChanged()
     }
 }
