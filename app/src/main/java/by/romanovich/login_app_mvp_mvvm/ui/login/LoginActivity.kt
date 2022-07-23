@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import by.romanovich.login_app_mvp_mvvm.LoginContract
 import by.romanovich.login_app_mvp_mvvm.R
 import by.romanovich.login_app_mvp_mvvm.app
 import by.romanovich.login_app_mvp_mvvm.databinding.ActivityLoginBinding
