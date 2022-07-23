@@ -4,65 +4,119 @@ import android.app.Activity
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.core.view.isVisible
+import by.romanovich.login_app_mvp_mvvm.app
 import by.romanovich.login_app_mvp_mvvm.databinding.ActivityMainBinding
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class MainActivity : AppCompatActivity(), LoginContract.View {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var presenter : LoginContract.Presenter? = null
+    //private var presenter : LoginContract.Presenter? = null
+    private var viewModel : LoginContract.ViewModel? = null
+
+    private val handler:Handler by lazy {
+        Handler(Looper.getMainLooper())
+    }
+
+    private lateinit var compositeDisposable: CompositeDisposable
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        presenter = restorePresenter()
-        presenter?.onAttach(this)
+        compositeDisposable = CompositeDisposable()
+        viewModel = restoreViewModel()
+        //viewModel?.onAttach(this)
 
         binding.loginButton.setOnClickListener {
-            presenter?.onLogin(
+            viewModel?.onLogin(
                 binding.loginEditText.text.toString(),
                 binding.passwordEditText.text.toString()
             )
         }
+
+        //подписываемся
+        viewModel?.let {
+            compositeDisposable.add(it.shouldShowProgress
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { shouldShow ->
+                    if (shouldShow == true) {
+                        showProgress()
+                    } else {
+                        hideProgress()
+                    }
+                })
+        }
+
+        viewModel?.isSuccess?.subscribe(handler) {
+            if (it == true) {
+                setSuccess()
+            }
+        }
+        viewModel?.errorText?.subscribe(handler) {
+            it?.let {
+                val success = viewModel?.isSuccess?.value
+                if (success == false) {
+                    setError(it)
+                }
+            }
+        }
     }
 
+
+    //отписываемся
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+        viewModel?.isSuccess?.unsubscribeAll()
+        viewModel?.errorText?.unsubscribeAll()
+    }
+
+
     //метод что бы достать презентор(объект) сохраненный в lastCustomNonConfigurationInstance если он LoginPresenter то мы его сохраняем
-    private fun restorePresenter(): LoginPresenter {
-        val presenter = lastCustomNonConfigurationInstance as? LoginPresenter
-       //возращаем presenter, но если он ноль то создаем новый презентер
-        return presenter ?: LoginPresenter()
+    private fun restoreViewModel(): LoginViewModel {
+        val viewModel = lastCustomNonConfigurationInstance as? LoginViewModel
+        /*для запоминания при повороте, перенесли в класс апп
+        val api = (application as App).api*/
+        //возращаем presenter, но если он ноль то создаем новый презентер
+        return viewModel?: LoginViewModel(app.loginUsecase)
     }
 
     //метод что бы положить объект
+    @Deprecated("Deprecated in Java")
     override fun onRetainCustomNonConfigurationInstance(): Any? {
-        return presenter
+        return viewModel
     }
 
-@MainThread
-    override fun setSuccess() {
+
+    private fun setSuccess() {
             binding.loginButton.isVisible = false
             binding.loginEditText.isVisible = false
             binding.passwordEditText.isVisible = false
             binding.root.setBackgroundColor(Color.GREEN)
     }
-    @MainThread
-    override fun setError(error: String) {
+
+    private fun setError(error: String) {
         Toast.makeText(this, " " +
                 "$error", Toast.LENGTH_SHORT).show()
     }
-    @MainThread
-    override fun showProgress() {
+
+    private fun showProgress() {
         binding.loginButton.isEnabled = false
         hideKeyboard(this)
     }
-    @MainThread
-    override fun hideProgress() {
+
+    private fun hideProgress() {
             binding.loginButton.isEnabled = true
     }
 
