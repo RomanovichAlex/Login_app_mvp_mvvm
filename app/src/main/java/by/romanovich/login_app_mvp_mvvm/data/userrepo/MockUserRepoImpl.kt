@@ -1,0 +1,27 @@
+package by.romanovich.login_app_mvp_mvvm.data.userrepo
+
+import by.romanovich.login_app_mvp_mvvm.domain.UserRepo
+import by.romanovich.login_app_mvp_mvvm.domain.entities.UserProfile
+
+class MockUserRepoImpl : UserRepo {
+
+    override fun addUser(user: UserProfile) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllUsers(): List<UserProfile> {
+        TODO("Not yet implemented")
+    }
+
+    override fun changeUser(id: String, user: UserProfile) {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteUser(id: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteAll() {
+        TODO("Not yet implemented")
+    }
+}
